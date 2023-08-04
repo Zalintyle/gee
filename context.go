@@ -6,13 +6,6 @@ import (
 	"net/http"
 )
 
-/*
-	代码最开头，给map[string]interface{}起了一个别名gee.H，构建JSON数据时，显得更简洁。
-	Context目前只包含了http.ResponseWriter和*http.Request，另外提供了对 Method 和 Path 这两个常用属性的直接访问。
-	提供了访问Query和PostForm参数的方法。
-	提供了快速构造String/Data/JSON/HTML响应的方法。
-*/
-
 type H map[string]string
 
 type Context struct {
@@ -23,6 +16,7 @@ type Context struct {
 	// request info
 	Path   string
 	Method string
+	Params map[string]string
 
 	// response info
 	StatusCode int
@@ -35,6 +29,11 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 		Path:   r.URL.Path,
 		Method: r.Method,
 	}
+}
+
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
 }
 
 func (c *Context) PostForm(key string) string {
